@@ -3,7 +3,8 @@ Python program to create the Spatial Pooler from the Hierarchical Temporal Memor
 
 Usage: python2 SP_Main.py
 
-Disclaimers:  -This project requires Python 2.  
+Disclaimers:  
+              -This project requires Python 2.  
               -This project requires you to have the following datasets if you'd like to test each portion:  
                 -> MNIST  
                 -> Iris  
