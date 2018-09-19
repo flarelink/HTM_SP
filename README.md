@@ -8,9 +8,7 @@ Disclaimers:  -This project requires Python 2.
                 -> MNIST  
                 -> Iris  
                 -> UCI Breast Cancer  
-                -> Fashion MNIST (I was given a binarized 32x32 dataset of this but at some point I'll make a  
-                                  bin_FASHION.py similar to bin_MNIST.py that will take the input csv of FASHION MNIST  
-                                  and create binarized versions of it.)  
+                -> Fashion MNIST (I was given a binarized 32x32 dataset of this but at some point I'll make a bin_FASHION.py similar to bin_MNIST.py that will take the input csv of FASHION MNIST and create binarized versions of it.)  
 
 
 The SP's default hyperparameters are as follows:  
