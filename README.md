@@ -16,18 +16,12 @@ Disclaimers:  -This project requires Python 2.
 
 The SP's default hyperparameters are as follows:
 
-number of columns               = 256
-
-number of proximal connections  = 31
-
-permanence threshold            = 0.5
-
-permanence increment            = 0.01
-
-permanence decrement            = -0.01
-
-minimum overlap score           = 2
-
+number of columns               = 256  
+number of proximal connections  = 31  
+permanence threshold            = 0.5  
+permanence increment            = 0.01  
+permanence decrement            = -0.01  
+minimum overlap score           = 2  
 number of winners               = 40
 
 boosting factor on overlap score= 3
