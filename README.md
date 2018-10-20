@@ -1,10 +1,9 @@
 # HTM_SP
 Python program to create the Spatial Pooler from the Hierarchical Temporal Memory algorithm. This is a program to model the Spatial Pooler (SP) portion of the Hierarchical Temporal Memory (HTM) algorithm developed by Jeff Hawkins and Numenta.
 
-Usage: python2 SP_Main.py
+Usage: python3 SP_Main.py
 
 Disclaimers:  
-              -This project requires Python 2.  
               -This project requires you to have the following datasets if you'd like to test each portion:  
                 -> MNIST  
                 -> Iris  
@@ -49,7 +48,7 @@ Training Accuracy: 92.418%
  Testing Accuracy: 90.660%  
 
 
-The default dataset is set to MNIST which is binarized down to 16x16. If you set the parameter --bin_MNIST to 28 then it  
-will just recreate the original MNIST train and test csvs to 'MNIST_train_bin_784.csv' and 'MNIST_test_bin_784.csv'.
+The default dataset is set to MNIST which is binarized down to 28x28. If you set the parameter --bin_MNIST to 28 then it  
+will just recreate the original MNIST train and test csvs to binarized versions: 'MNIST_train_bin_784.csv' and 'MNIST_test_bin_784.csv'.
 
 The scalar encoder in the encoders.py file is a modified version from Nupic's implementation but retains many of the same fundamentals to the original implementation. I used it primarily for testing purposes for the Iris and UCI Breast Cancer datasets. 
