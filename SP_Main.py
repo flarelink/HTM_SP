@@ -40,28 +40,25 @@ if __name__ == "__main__":
     # Binarized MNIST dataset
     parser.add_argument('--MNIST', type=str2bool, nargs='?', default=True,
                         help='Uses the binarized MNIST dataset if set to True; (default=True')
+    parser.add_argument('--MNIST_orig', type=str2bool, nargs='?', default=False,
+                        help='Uses the original MNIST dataset if set to True; (default=False)')
     parser.add_argument('--bin_MNIST', type=int, default=28,
-                        help='Create a new binarized csv file of MNIST by specifying pixel size, i.e.) 16x16, pixel size = 16; (default=16)')
-    parser.add_argument('--MNIST_tr_csv', type=str, default='MNIST_train_bin_256.csv',
-                        help='Input binarized train csv file for MNIST, use binary forms; (default=MNIST_train_bin_256.csv)')
-    parser.add_argument('--MNIST_ts_csv', type=str, default='MNIST_test_bin_256.csv',
-                        help='Input binarized test csv file for MNIST, use binary forms; (default=MNIST_test_bin_256.csv)')
-
+                        help='Create a new binarized csv file of MNIST by specifying pixel size, i.e.) 28x28, pixel size = 28, so bin_MNISt = 28; (default=28)')
     # Breast cancer dataset
     parser.add_argument('--uci_bc', type=str2bool, nargs='?', default=False,
-                        help='Uses the UCI breast cancer dataset if set to True; (default=False')
+                        help='Uses the UCI breast cancer dataset if set to True; (default=False)')
     parser.add_argument('--uci_bc_csv', type=str, default='breast_cancer_orig.csv',
                         help='Input csv file for UCI breast cancer; (default=breast_cancer.csv)')
 
     # Iris dataset
     parser.add_argument('--iris', type=str2bool, nargs='?', default=False,
-                        help='Uses the Iris dataset if set to True; (default=False')
+                        help='Uses the Iris dataset if set to True; (default=False)')
     parser.add_argument('--iris_csv', type=str, default='iris.csv',
                         help='Input csv file for iris dataset; (default=iris.csv)')
 
     # Binarized FASHION-MNIST dataset
     parser.add_argument('--FASHION', type=str2bool, nargs='?', default=False,
-                        help='Uses the binarized MNIST dataset if set to True; (default=True')
+                        help='Uses the binarized MNIST dataset if set to True; (default=True)')
     parser.add_argument('--FM_tr_csv', type=str, default='FMN_Im32x32_tr.csv',
                         help='Input binarized train csv file for FASHION-MNIST, use binary forms; (default=FMN_Im32x32_tr.csv)')
     parser.add_argument('--FM_ts_csv', type=str, default='FMN_Im32x32_ts.csv',
@@ -73,9 +70,9 @@ if __name__ == "__main__":
     parser.add_argument('--enc_w', type=int, default=39,
                         help='Determines number of active bits for output, should be changed from default and should be an odd value; (default=39)')
     parser.add_argument('--enc_periodic', type=str2bool, nargs='?', default=False,
-                        help='Flag to say if input data is periodic; (default=False')
+                        help='Flag to say if input data is periodic; (default=False)')
     parser.add_argument('--enc_clip_input', type=str2bool, nargs='?', default=False,
-                        help='Flag to say if input data should be clipped; (default=False')
+                        help='Flag to say if input data should be clipped; (default=False)')
 
     # Spatial Pooler initializations
     parser.add_argument('--n_cols', type=int, default=256,
@@ -100,8 +97,8 @@ if __name__ == "__main__":
     # Softmax hyperparameters
     parser.add_argument('--n_classes', type=int, default=10,
                         help='Number of classes in labels; (default=10)')
-    parser.add_argument('--n_epochs', type=int, default=50,
-                        help='Number of epochs to train the softmax classifier; (default=50)')
+    parser.add_argument('--n_epochs', type=int, default=100,
+                        help='Number of epochs to train the softmax classifier; (default=100)')
     parser.add_argument('--lr', type=float, default=0.001,
                         help='Learning rate for softmax classifier; (default=0.001)')
 
@@ -123,19 +120,38 @@ if __name__ == "__main__":
     cwd = os.getcwd()
 
     ##### RUN FOR SET AMOUNT OF TIMES #####
-    for r in xrange(args.n_runs):
+    for r in range(args.n_runs):
 
          ##### LOAD DATASET, HIERARCHY SYSTEM WHERE MNIST WILL BE CHOSEN FIRST IF TWO DATASETS ARE SET TO TRUE #####
     
         # Load MNIST data
+        # Note: The names I have given the original mnist data are:
+        # 'mnist_train_orig.csv' and 'mnist_test_orig.csv'
+        # when binarized you will receive 2 output csvs that will have the naming conventions:
+        # 'MNIST_train_bin_<k**2>.csv' and 'MNIST_test_bin_<k**2>.csv' where <k**2> is replaced
+        # by the binarization desired. So for a pixel size of 16x16, k = 16 and the output csv
+        # files will be: 'MNIST_train_bin_256.csv' and 'MNIST_test_bin_256.csv'
         if(args.MNIST == True):
-            # check if pixel binarized file is already made
-            if ( (args.bin_MNIST != 28) or (os.path.exists(cwd + '/SP_library/MNIST/MNIST_train_bin_{}.csv'.format(args.bin_MNIST**2) ) == False) ):
-                args.MNIST_tr_csv, args.MNIST_ts_csv = bin_MNIST('mnist_train_orig.csv', 'mnist_test_orig.csv', args.bin_MNIST)
+            # check if original MNIST dataset is desired
+            if(args.MNIST_orig == True):
+                print('Original MNIST dataset was selected')
+                MNIST_tr_csv = 'mnist_train_orig.csv'
+                MNIST_ts_csv = 'mnist_test_orig.csv'
+            else:
+                # check if pixel binarized file is already made
+                if (os.path.exists(cwd + '/SP_library/MNIST/MNIST_train_bin_{}.csv'.format(args.bin_MNIST**2) ) == False):
+                    print('Binarizing MNIST to ' + str(args.bin_MNIST) + 'x' + str(args.bin_MNIST))
+                    MNIST_tr_csv, MNIST_ts_csv = bin_MNIST('mnist_train_orig.csv', 'mnist_test_orig.csv', args.bin_MNIST)
+                else:
+                    print('Binarization of MNIST for this value is already done, collecting csvs now')
+                    MNIST_tr_csv = 'MNIST_train_bin_{}.csv'.format(args.bin_MNIST**2)
+                    MNIST_ts_csv = 'MNIST_test_bin_{}.csv'.format(args.bin_MNIST**2)
 
             # Load data
             print('MNIST dataset being loaded')
-            train_data, train_labels, test_data, test_labels = load_MNIST(args.MNIST_tr_csv, args.MNIST_ts_csv)
+            print('The MNIST train csv is: ' + MNIST_tr_csv)
+            print('The MNIST test csv is : ' + MNIST_ts_csv)
+            train_data, train_labels, test_data, test_labels = load_MNIST(MNIST_tr_csv, MNIST_ts_csv)
             print('MNIST loading completed')
 
         # Load UCI Breast Cancer dataset
@@ -174,6 +190,10 @@ if __name__ == "__main__":
         else:
             raise IOError('No dataset is selected')
 
+        # setting flag for verbosity flag to raise error flag
+        if(args.MNIST == False):
+          args.bin_MNIST = None
+
         ##### RUNNING DATA THROUGH SPATIAL POOLER #####
         print('Spatial pooler commencing...')
         sdr_train_array, sdr_test_array, \
@@ -188,7 +208,8 @@ if __name__ == "__main__":
                                                                      args.n_winners,
                                                                      args.beta_boost,
                                                                      args.T_boost_speed,
-                                                                     args.verbose)
+                                                                     args.verbose,
+                                                                     args.bin_MNIST)
         print('Spatial pooling completed')
 
         ##### TRAIN SOFTMAX CLASSIFIER #####

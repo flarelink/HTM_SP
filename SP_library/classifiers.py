@@ -45,8 +45,8 @@ def softmax_classify(sdr_train_array, sdr_train_labels, sdr_test_array, sdr_test
     # one_hot_test_labels = (np.arange(np.max(sdr_test_labels) + 1) == sdr_test_labels[:, None]).astype(float)
     # print('one-hot encoding:\n', one_hot_test_labels)
 
-    for e in xrange(n_epochs):
-        for i in xrange(n_train_ex):
+    for e in range(n_epochs):
+        for i in range(n_train_ex):
             s = np.reshape(sdr_train_array[i, :], (1, n_cols))
             logit = np.dot(s, w)
             softmax = np.exp(logit) / np.sum(np.exp(logit))
@@ -58,7 +58,7 @@ def softmax_classify(sdr_train_array, sdr_train_labels, sdr_test_array, sdr_test
             train_accuracy_iter[0, i] = np.argmax(softmax) == sdr_train_labels[i]
         train_accuracy = np.mean(train_accuracy_iter)
 
-        for i in xrange(n_test_ex):
+        for i in range(n_test_ex):
             s = np.reshape(sdr_test_array[i, :], (1, n_cols))
             logit = np.dot(s, w)
             softmax = np.exp(logit) / np.sum(np.exp(logit))

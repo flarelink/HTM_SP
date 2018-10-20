@@ -6,7 +6,7 @@ import sklearn as skl
 import cv2
 from metrics import sparseness
 
-def SP_init(train_data, test_data, n_cols, n_proxim_con, perm_thresh, perm_inc, perm_dec, min_overlap, n_winners, beta_boost, T_boost_speed, verbose):
+def SP_init(train_data, test_data, n_cols, n_proxim_con, perm_thresh, perm_inc, perm_dec, min_overlap, n_winners, beta_boost, T_boost_speed, verbose, pixel_size):
     """
     Spatial Pooler Algorithm of Hierarchical Temporal Memory
     
@@ -22,12 +22,16 @@ def SP_init(train_data, test_data, n_cols, n_proxim_con, perm_thresh, perm_inc, 
     :param beta_boost   : boosting factor
     :param T_boost_speed: time steps for boosting
     :param verbose      : verbosity flag
+    :param pixel_size   : pixel size for binarized 
     
     :return: sdr_train_array       : output sdr train array from input training data
                  sdr_test_array    : output sdr test array from input testing data   
                  sparse_train_array: sparse array to determine sparsity metric of sdr_train_array
                  sparse_test_array : sparse array to determine sparsity metric of sdr_test_array   
     """
+
+    if(pixel_size == None):
+      pixel_size = 28
 
     # Load MNIST data input_size (aka nn) of 256 or 1024
     input_size = len(train_data[1])
@@ -39,7 +43,7 @@ def SP_init(train_data, test_data, n_cols, n_proxim_con, perm_thresh, perm_inc, 
     # syn_array[syn_index] = 1
 
     # Synapses array
-    for i in xrange(n_cols):
+    for i in range(n_cols):
         syn_array[i, syn_index[i]] = 1
 
     # syn_array = np.random.randint(0, 2, (n_cols, input_size))
@@ -62,12 +66,12 @@ def SP_init(train_data, test_data, n_cols, n_proxim_con, perm_thresh, perm_inc, 
 
     # Main code
     train_en = True
-    for epoch in xrange(0, 2):
+    for epoch in range(0, 2):
         input_set = train_data
         if train_en == False:
             input_set = test_data
 
-        for iter in xrange(0, len(input_set)):
+        for iter in range(0, len(input_set)):
             # Calculate overlap scores
             overlap_scores = np.dot((syn_array * (perm_array >= perm_thresh)), input_set[iter, :].transpose()) \
                              * boosting
@@ -76,7 +80,7 @@ def SP_init(train_data, test_data, n_cols, n_proxim_con, perm_thresh, perm_inc, 
             sdr = np.zeros(([1, n_cols]), dtype=int)
 
             # Select the winners
-            for i in xrange(n_winners):
+            for i in range(n_winners):
                 win_val = np.max(overlap_scores)
                 win_index = np.argmax(overlap_scores)
                 if(win_val >= min_overlap):
@@ -121,11 +125,12 @@ def SP_init(train_data, test_data, n_cols, n_proxim_con, perm_thresh, perm_inc, 
             # You are set!!!
 
             if(verbose):
+                pixel_sdr = int(n_cols**(0.5))
                 # Plot the image
-                sdr_image = np.reshape(sdr, (16, 16))
+                sdr_image = np.reshape(sdr, (pixel_sdr, pixel_sdr))
 
                 # Plot the image
-                image = np.reshape(train_data[iter, :], (32, 32))
+                image = np.reshape(train_data[iter, :], (pixel_size, pixel_size))
                 plt.figure(1)
                 plt.subplot(211)
                 plt.imshow(image, cmap='gray_r')

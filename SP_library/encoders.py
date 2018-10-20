@@ -66,7 +66,7 @@ def scalar_encoder(input_data_array, n, w, periodic, clipInput):
     # Checks
     if(min_vals.any() == None or max_vals.any() == None):
         raise ValueError('min and max vals should be real values')
-    for i in xrange(len(min_vals)):
+    for i in range(len(min_vals)):
         if(min_vals[i] >= max_vals[i]):
             raise ValueError('min_vals should not be greater than or equal to max_vals')
     if(w >= n):
@@ -123,7 +123,7 @@ def scalar_encoder(input_data_array, n, w, periodic, clipInput):
     radius = np.zeros((1, parameters), dtype=float)
 
     # Set all variables
-    for c in xrange(0, parameters):
+    for c in range(0, parameters):
         # # Normalize the input
         # input_data_array[:, c] = input_data_array[:, c] / float(max_vals[c])
 
@@ -165,11 +165,11 @@ def scalar_encoder(input_data_array, n, w, periodic, clipInput):
         centerbin = np.zeros((1, len(input_row)))
         minbin = np.zeros((1, len(input_row)))
 
-        for col in xrange(len(input_row)):
+        for col in range(len(input_row)):
             if input_row[col] < min_vals[col]:
                 # Don't clip periodic inputs. Out-of-range input is always an error
                 if clipInput and not periodic:
-                    print "Clipped input %.2f to min_vals %.2f" % (input_row[col], min_vals[col])
+                    print("Clipped input {:.2f} to min_vals {:.2f}".format(input_row[col], min_vals[col]))
                     input_row[col] = min_vals[col]
                 else:
                     raise Exception('input (%s) less than range (%s - %s)' %
@@ -183,7 +183,7 @@ def scalar_encoder(input_data_array, n, w, periodic, clipInput):
             else:
                 if input_row[col] > max_vals[col]:
                     if clipInput:
-                        print "Clipped input %.2f to max_vals %.2f" % (input_row[col], max_vals[col])
+                        print("Clipped input %.2f to max_vals %.2f" % (input_row[col], max_vals[col]))
                         input_row[col] = max_vals[col]
                     else:
                         raise Exception('input (%s) greater than range (%s - %s)' %
@@ -221,7 +221,7 @@ def scalar_encoder(input_data_array, n, w, periodic, clipInput):
             # The bucket index is the index of the first bit to set in the output
             minbin = bucketIdx
 
-            for m in xrange(len(input_row)):
+            for m in range(len(input_row)):
                 maxbin[0, m] = minbin[0, m] + 2 * halfwidth
                 if periodic:
                     # Handle the edges by computing wrap-around
@@ -247,7 +247,7 @@ def scalar_encoder(input_data_array, n, w, periodic, clipInput):
         #print "output:",
         #print(output)
 
-    for i in xrange(total_num_input_data):
+    for i in range(total_num_input_data):
         encodeIntoArray(input_data_array[i, :], rep_space, min_vals, max_vals, output_rep_array[i, :])
         # print(output_rep_array)
 
